@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { TransformationSection } from "@/components/sections/TransformationSection";
 import { SkillsSection } from "@/components/sections/SkillsSection";
+import { AccessSection } from "@/components/sections/AccessSection";
 import { ResultsSection } from "@/components/sections/ResultsSection";
 import { ChoiceSection } from "@/components/sections/ChoiceSection";
 import { PricingSection } from "@/components/sections/PricingSection";
@@ -19,6 +20,7 @@ export default function Home() {
             <ProblemSection />
             <TransformationSection />
             <SkillsSection />
+            <AccessSection />
             <ResultsSection />
             <ChoiceSection />
             <PricingSection />
