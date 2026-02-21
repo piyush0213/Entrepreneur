@@ -19,7 +19,7 @@ const letterVariants = {
 };
 
 export function HeroSection() {
-    const title = "The Life Of An Entrepreneur";
+    const title = "The Life Of An  Entrepreneur";
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const playerRef = useRef<Player | null>(null);
     const [isMuted, setIsMuted] = useState(true);
