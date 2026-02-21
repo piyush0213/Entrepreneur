@@ -4,6 +4,7 @@ import { ProblemSection } from "@/components/sections/ProblemSection";
 import { TransformationSection } from "@/components/sections/TransformationSection";
 import { SkillsSection } from "@/components/sections/SkillsSection";
 import { ResultsSection } from "@/components/sections/ResultsSection";
+import { ChoiceSection } from "@/components/sections/ChoiceSection";
 import { PricingSection } from "@/components/sections/PricingSection";
 import { QualificationSection } from "@/components/sections/QualificationSection";
 import { VisionSection } from "@/components/sections/VisionSection";
@@ -19,6 +20,7 @@ export default function Home() {
             <TransformationSection />
             <SkillsSection />
             <ResultsSection />
+            <ChoiceSection />
             <PricingSection />
             <QualificationSection />
             <VisionSection />
