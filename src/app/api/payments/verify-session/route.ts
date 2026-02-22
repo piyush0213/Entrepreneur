@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
         }
 
         // Retrieve the checkout session from Stripe
-        const checkoutSession = await stripe.checkout.sessions.retrieve(session_id);
+        const checkoutSession = await getStripe().checkout.sessions.retrieve(session_id);
 
         if (checkoutSession.payment_status !== "paid") {
             return NextResponse.json(

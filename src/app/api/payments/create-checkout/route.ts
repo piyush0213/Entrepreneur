@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { stripe, PLANS, PlanKey } from "@/lib/stripe";
+import { getStripe, PLANS, PlanKey } from "@/lib/stripe";
 import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         const selectedPlan = PLANS[plan];
 
         // Create Stripe Checkout Session
-        const checkoutSession = await stripe.checkout.sessions.create({
+        const checkoutSession = await getStripe().checkout.sessions.create({
             mode: "payment",
             payment_method_types: ["card"],
             customer_email: session.user.email,
