@@ -1,12 +1,14 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useSession, signIn } from "next-auth/react";
 import { SectionReveal } from "@/components/SectionReveal";
 
 const plans = [
     {
         name: "Learner Pack",
+        key: "learner",
         price: "49",
         period: "/month",
         description: "Perfect for those ready to start their transformation.",
@@ -23,6 +25,7 @@ const plans = [
     },
     {
         name: "Master Pack",
+        key: "master",
         price: "99",
         period: "/month",
         description: "For those committed to mastering every skill at the highest level.",
@@ -51,6 +54,41 @@ function PricingCard({
 }) {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-80px" });
+    const { data: session } = useSession();
+    const [loading, setLoading] = useState(false);
+
+    const handleSubscribe = async () => {
+        if (!session) {
+            signIn("google", { callbackUrl: window.location.href });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const res = await fetch("/api/payments/create-checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan: plan.key }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.error || "Failed to start checkout");
+                return;
+            }
+
+            // Redirect to Stripe Checkout
+            if (data.url) {
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error("Checkout error:", error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <motion.div
@@ -68,18 +106,16 @@ function PricingCard({
                 transition: { duration: 0.3 },
             }}
             className={`relative rounded-2xl overflow-hidden ${plan.highlighted
-                    ? "gold-border-glow"
-                    : "border border-white/10"
+                ? "gold-border-glow"
+                : "border border-white/10"
                 }`}
         >
-            {/* Background */}
             <div
                 className={`p-8 md:p-10 h-full flex flex-col ${plan.highlighted
-                        ? "bg-gradient-to-b from-gold/10 via-gold/5 to-transparent"
-                        : "bg-black-card"
+                    ? "bg-gradient-to-b from-gold/10 via-gold/5 to-transparent"
+                    : "bg-black-card"
                     }`}
             >
-                {/* Badge */}
                 {plan.badge && (
                     <div className="mb-6">
                         <span className="px-4 py-1.5 bg-gold-gradient text-black text-xs font-bold uppercase tracking-wider rounded-full">
@@ -88,7 +124,6 @@ function PricingCard({
                     </div>
                 )}
 
-                {/* Header */}
                 <div className="mb-8">
                     <h3 className="font-serif text-2xl md:text-3xl font-bold text-white mb-2">
                         {plan.name}
@@ -103,10 +138,8 @@ function PricingCard({
                     </div>
                 </div>
 
-                {/* Divider */}
                 <div className="gold-divider mb-8" />
 
-                {/* Features */}
                 <ul className="space-y-4 flex-1 mb-10">
                     {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start gap-3">
@@ -128,16 +161,16 @@ function PricingCard({
                     ))}
                 </ul>
 
-                {/* CTA */}
-                <a
-                    href="#"
-                    className={`w-full text-center ${plan.highlighted
-                            ? "btn-gold pulse-cta"
-                            : "btn-outline-gold"
+                <button
+                    onClick={handleSubscribe}
+                    disabled={loading}
+                    className={`w-full text-center cursor-pointer disabled:opacity-50 disabled:cursor-wait ${plan.highlighted
+                        ? "btn-gold pulse-cta"
+                        : "btn-outline-gold"
                         }`}
                 >
-                    {plan.cta}
-                </a>
+                    {loading ? "Redirecting..." : session ? plan.cta : "Sign In to Subscribe"}
+                </button>
             </div>
         </motion.div>
     );

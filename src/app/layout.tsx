@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { CursorGlow } from "@/components/CursorGlow";
+import { Providers } from "@/components/Providers";
+import { AuthButton } from "@/components/AuthButton";
 
 const playfair = Playfair_Display({
     subsets: ["latin"],
@@ -45,8 +47,14 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
             <body className="font-sans antialiased" suppressHydrationWarning>
-                <CursorGlow />
-                {children}
+                <Providers>
+                    {/* Fixed auth nav */}
+                    <nav className="fixed top-0 right-0 z-50 p-4 md:p-6">
+                        <AuthButton />
+                    </nav>
+                    <CursorGlow />
+                    {children}
+                </Providers>
             </body>
         </html>
     );
